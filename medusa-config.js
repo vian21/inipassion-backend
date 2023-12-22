@@ -1,39 +1,25 @@
 const dotenv = require("dotenv");
 
-let ENV_FILE_NAME = "";
-switch (process.env.NODE_ENV) {
-  case "production":
-    ENV_FILE_NAME = ".env.production";
-    break;
-  case "staging":
-    ENV_FILE_NAME = ".env.staging";
-    break;
-  case "test":
-    ENV_FILE_NAME = ".env.test";
-    break;
-  case "development":
-  default:
-    ENV_FILE_NAME = ".env";
-    break;
-}
+let ENV_FILE_NAME = ".env";
 
 try {
   dotenv.config({ path: process.cwd() + "/" + ENV_FILE_NAME });
 } catch (e) {}
 
+console.log("NODE_ENV: ", process.env.NODE_ENV);
+console.log("HOST: ", process.env.HOST);
+console.log("Port: ", process.env.PORT);
+
 // CORS when consuming Medusa from admin
-const ADMIN_CORS =
-  process.env.ADMIN_CORS ||
-  "http://24.202.192.150:7000,http://24.202.192.150:7001";
+const ADMIN_CORS = process.env.ADMIN_CORS || "/http://*/";
 
 // CORS to avoid issues when consuming Medusa from a client
 const STORE_CORS = process.env.STORE_CORS || "/http://*/";
 
 const DATABASE_URL =
-  process.env.DATABASE_URL ||
-  "postgres://24.202.192.150/medusa-starter-default";
+  process.env.DATABASE_URL || "postgres://localhost/medusa-starter-default";
 
-const REDIS_URL = process.env.REDIS_URL || "redis://24.202.192.150:6379";
+const REDIS_URL = process.env.REDIS_URL || "redis://localhost:6379";
 
 const plugins = [
   `medusa-fulfillment-manual`,
@@ -42,11 +28,7 @@ const plugins = [
     resolve: `@medusajs/file-local`,
     options: {
       upload_dir: "uploads",
-      backend_url: `http://${
-        process.env.NODE_ENV === "production"
-          ? process.env.HOSTNAME
-          : "localhost"
-      }:9000`,
+      backend_url: `http://${process.env.HOST}:${process.env.PORT || 9000}`,
     },
   },
   {
@@ -64,6 +46,8 @@ const plugins = [
     },
   },
 ];
+
+console.log("plugins: ", plugins);
 
 const modules = {
   /*eventBus: {
@@ -87,11 +71,12 @@ const projectConfig = {
   store_cors: STORE_CORS,
   database_url: DATABASE_URL,
   admin_cors: ADMIN_CORS,
-  host:
-    process.env.NODE_ENV === "production" ? process.env.HOSTNAME : "localhost",
+  host: process.env.HOST,
   // Uncomment the following lines to enable REDIS
   // redis_url: REDIS_URL
 };
+
+console.log("projectConfig: ", projectConfig);
 
 /** @type {import('@medusajs/medusa').ConfigModule} */
 module.exports = {
