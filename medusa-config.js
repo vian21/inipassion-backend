@@ -79,6 +79,14 @@ const projectConfig = {
   database_url: DATABASE_URL,
   admin_cors: ADMIN_CORS,
   host: process.env.HOST,
+  database_extra:
+    process.env.NODE_ENV !== "development"
+      ? {
+          ssl: {
+            rejectUnauthorized: false,
+          },
+        }
+      : {},
   // Uncomment the following lines to enable REDIS
   // redis_url: REDIS_URL
 };
