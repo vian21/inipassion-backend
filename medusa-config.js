@@ -45,7 +45,7 @@ const plugins = [
       serve: true,
       path: "/app",
       open: true,
-      // port: 7001,
+      port: process.env.PORT,
       autoRebuild: true,
       // develop: {
       //   open: process.env.OPEN_BROWSER !== "false",
@@ -79,14 +79,12 @@ const projectConfig = {
   database_url: DATABASE_URL,
   admin_cors: ADMIN_CORS,
   host: process.env.HOST,
-  database_extra:
-    process.env.NODE_ENV !== "development"
-      ? {
-          ssl: {
-            rejectUnauthorized: false,
-          },
-        }
-      : {},
+  database_extra: {
+    ssl: {
+      rejectUnauthorized: false,
+    },
+  },
+
   // Uncomment the following lines to enable REDIS
   // redis_url: REDIS_URL
 };
